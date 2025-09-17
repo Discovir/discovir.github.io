@@ -24,76 +24,11 @@
         
         body {
             font-family: 'JetBrains Mono', monospace;
-            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            background: #0a0a0a;
             color: #00ff41;
-            overflow-x: hidden;
             height: 100vh;
+            overflow: hidden;
             position: relative;
-        }
-        
-        /* CRT Effects */
-        .crt-enabled {
-            filter: contrast(1.1) brightness(1.2);
-        }
-        
-        .crt-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 10;
-            opacity: 0.8;
-            background: 
-                linear-gradient(transparent 50%, rgba(0, 255, 65, 0.03) 50%),
-                linear-gradient(90deg, transparent 50%, rgba(255, 0, 0, 0.015) 50%);
-            background-size: 100% 4px, 3px 100%;
-            animation: scanlines 0.1s linear infinite;
-        }
-        
-        .crt-glow {
-            position: fixed;
-            top: -10%;
-            left: -10%;
-            width: 120%;
-            height: 120%;
-            pointer-events: none;
-            z-index: 5;
-            border-radius: 50%;
-            box-shadow: 
-                inset 0 0 300px rgba(0, 255, 65, 0.1),
-                inset 0 0 100px rgba(0, 255, 65, 0.2),
-                0 0 50px rgba(0, 255, 65, 0.1);
-        }
-        
-        .crt-curvature {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 15;
-            background: radial-gradient(ellipse at center, transparent 0%, transparent 70%, rgba(0,0,0,0.3) 100%);
-        }
-        
-        /* VHS Effects */
-        .vhs-enabled {
-            filter: saturate(1.2) hue-rotate(-5deg);
-        }
-        
-        .vhs-noise {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 8;
-            opacity: 0.1;
-            background: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300"><defs><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="1" stitchTiles="stitch"/></filter></defs><rect width="100%" height="100%" filter="url(%23noiseFilter)"/></svg>');
-            animation: noise 0.2s steps(10) infinite;
         }
         
         .chromatic {
@@ -208,16 +143,22 @@
             background: rgba(0, 255, 65, 0.1);
             border: 1px solid #00ff41;
             color: #00ff41;
-            padding: 5px 10px;
-            border-radius: 3px;
+            padding: 8px 15px;
+            border-radius: 5px;
             cursor: pointer;
             font-family: inherit;
-            font-size: 12px;
-            z-index: 20;
+            font-size: 14px;
+            z-index: 1000;
+            transition: all 0.2s ease;
         }
         
         .sound-toggle:hover {
             background: rgba(0, 255, 65, 0.2);
+            transform: scale(1.05);
+        }
+        
+        .sound-toggle:active {
+            transform: scale(0.95);
         }
         
         .boot-screen {
@@ -325,16 +266,10 @@
             font-size: 14px;
             flex: 1;
             padding: 0;
+            caret-color: #00ff41;
         }
         
-        .cursor {
-            width: 2px;
-            height: 18px;
-            background: #00ff41;
-            display: inline-block;
-            animation: blink 1s infinite;
-            margin-left: 2px;
-        }
+        /* Removing custom cursor as we're using the native caret */
         
         .matrix {
             position: fixed;
@@ -391,10 +326,13 @@
         }
         
         .error {
-            color: #ff4444;
+            color: red;
         }
-        
-        .success {
+        .error-message {
+            color: red;
+            font-size: 14px;
+            white-space: pre;
+        }        .success {
             color: #44ff44;
         }
         
@@ -442,25 +380,7 @@
             }
         }
         
-        /* CRT/VHS Animations */
-        @keyframes scanlines {
-            0% { background-position: 0 0, 0 0; }
-            100% { background-position: 0 4px, 3px 0; }
-        }
-        
-        @keyframes noise {
-            0% { transform: translate(0, 0) rotate(0deg); }
-            10% { transform: translate(-1px, -1px) rotate(-1deg); }
-            20% { transform: translate(-2px, 0px) rotate(1deg); }
-            30% { transform: translate(2px, 1px) rotate(0deg); }
-            40% { transform: translate(1px, -1px) rotate(1deg); }
-            50% { transform: translate(-1px, 2px) rotate(-1deg); }
-            60% { transform: translate(-2px, 1px) rotate(0deg); }
-            70% { transform: translate(2px, 1px) rotate(-1deg); }
-            80% { transform: translate(-1px, -1px) rotate(1deg); }
-            90% { transform: translate(1px, 2px) rotate(0deg); }
-            100% { transform: translate(1px, -2px) rotate(-1deg); }
-        }
+        /* Basic animations */
         
         @keyframes tvStartup {
             0% {
@@ -596,12 +516,6 @@
         <div class="tv-exit-dot"></div>
     </div>
     
-    <!-- CRT/VHS Effects -->
-    <div class="crt-overlay" id="crtOverlay"></div>
-    <div class="crt-glow" id="crtGlow"></div>
-    <div class="crt-curvature" id="crtCurvature"></div>
-    <div class="vhs-noise" id="vhsNoise"></div>
-    
     <!-- Sound Toggle -->
     <button class="sound-toggle" id="soundToggle">🔊 SOUND ON</button>
     
@@ -644,7 +558,8 @@
                     motivate: () => this.motivate(),
                     exit: () => this.exitTerminal(),
                     theme: () => this.toggleTheme(),
-                    sound: () => this.toggleSound()
+                    sound: () => this.toggleSound(),
+                    god: () => this.show404()
                 };
                 
                 this.facts = [
@@ -677,11 +592,27 @@
             init() {
                 this.tvStartupSequence();
             }
-                    updateSoundToggle() {
-                        const soundToggle = document.getElementById('soundToggle');
-                        if (!soundToggle) return;
-                        soundToggle.textContent = this.soundEnabled ? '🔊 SOUND ON' : '🔇 SOUND OFF';
+            
+            toggleSound() {
+                this.soundEnabled = !this.soundEnabled;
+                this.updateSoundToggle();
+                
+                if (this.soundEnabled) {
+                    // Resume audio context if it was suspended
+                    if (this.audioContext && this.audioContext.state === 'suspended') {
+                        this.audioContext.resume();
                     }
+                    this.startBackgroundHum();
+                } else {
+                    this.stopBackgroundHum();
+                }
+            }
+            
+            updateSoundToggle() {
+                const soundToggle = document.getElementById('soundToggle');
+                if (!soundToggle) return;
+                soundToggle.textContent = this.soundEnabled ? '🔊 SOUND ON' : '🔇 SOUND OFF';
+            }
             
             initAudio() {
                 try {
@@ -883,13 +814,37 @@
                 }, duration / 20);
             }
             
+            show404() {
+                const error404Art = `<div class="ascii-art error">
+░▒▓████████▓▒░▒▓███████▓▒░░▒▓███████▓▒░ ░▒▓██████▓▒░░▒▓███████▓▒░       ░▒▓█▓▒░░▒▓█▓▒░▒▓████████▓▒░▒▓█▓▒░░▒▓█▓▒░ 
+░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░ 
+░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░ 
+░▒▓██████▓▒░ ░▒▓███████▓▒░░▒▓███████▓▒░░▒▓█▓▒░░▒▓█▓▒░▒▓███████▓▒░       ░▒▓████████▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓████████▓▒░ 
+░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░             ░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░ 
+░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░             ░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░ 
+░▒▓████████▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░░▒▓██████▓▒░░▒▓█▓▒░░▒▓█▓▒░             ░▒▓█▓▒░▒▓████████▓▒░      ░▒▓█▓▒░ 
+                                                                                                                 
+                                                                                                                 </div>
+<div class="error-message">
+    [X] ERROR 404: DEITY NOT FOUND
+
+    Perhaps you're searching for something that is:
+    1. A human construct
+    2. Lost in the realm of mythology
+    3. Stuck in an infinite loop
+    4. Out of bounds of this reality
+
+    Try reason and evidence instead...</div>`;
+                this.addOutput(error404Art);
+                this.playGlitchSound();
+            }
+            
             createInputLine() {
                 const inputLine = document.createElement('div');
                 inputLine.className = 'input-line';
                 inputLine.innerHTML = `
                     <span class="prompt">krrish@terminal:~$</span>
                     <input type="text" class="terminal-input" id="terminalInput" autocomplete="off">
-                    <span class="cursor"></span>
                 `;
                 
                 this.terminalBody.appendChild(inputLine);
@@ -904,9 +859,12 @@
                     }
                     
                     if (e.key === 'Enter') {
-                        this.processCommand(input.value.trim());
-                        input.remove();
-                        inputLine.querySelector('.cursor').remove();
+                        const command = input.value.trim();
+                        input.value = '';
+                        this.processCommand(command);
+                        const inputLine = input.parentElement;
+                        inputLine.innerHTML = `<span class="prompt">krrish@terminal:~$</span> ${command}`;
+                        this.createInputLine();
                     } else if (e.key === 'ArrowUp') {
                         e.preventDefault();
                         if (this.historyIndex < this.commandHistory.length - 1) {
@@ -950,7 +908,6 @@
                 if (command) {
                     this.commandHistory.push(command);
                     this.historyIndex = -1;
-                    this.addOutput(`<span class="prompt">krrish@terminal:~$</span> ${command}`);
                     
                     if (this.commands[command]) {
                         this.commands[command]();
@@ -959,8 +916,6 @@
                         this.addOutput("Type 'help' for available commands.");
                     }
                 }
-                
-                setTimeout(() => this.createInputLine(), 100);
             }
             
             showHelp() {
@@ -1321,7 +1276,7 @@ Check out my GitHub for the complete collection!
 </div>`;
                 
                 this.addOutput(banner);
-                this.addOutput('<span class="success">🚀 Transcendence mode: ACTIVATED</span>');
+                
             }
             
             clearTerminal() {
