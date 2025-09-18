@@ -341,6 +341,24 @@
             color: #4444ff;
         }
         
+        .skill-section {
+            display: flex;
+            flex-direction: column;
+            gap: 0.7em;
+            white-space: pre-line;
+        }
+        
+        .skill-category {
+            margin: 0.5em 0;
+            padding-left: 1em;
+            border-left: 2px solid #333;
+        }
+        
+        .skill-category span.warning {
+            display: block;
+            margin-bottom: 0.4em;
+        }
+        
         @keyframes fadeIn {
             to { opacity: 1; }
         }
@@ -937,27 +955,34 @@
             
             showSkills() {
                 const skillsText = `
+<div class="skill-section">
 <span class="success">Technical Skills & Expertise</span>
 
+<div class="skill-category">
 <span class="warning">Programming Languages</span>
-  • Python      
-  • C++       
-  • Java      
-  • JavaScript 
+  • Python      - High-level applications & scripting
+  • C++         - Performance-critical systems
+  • Java        - Enterprise software development
+  • JavaScript  - Web & browser applications
+</div>
 
+<div class="skill-category">
 <span class="warning">Technologies & Frameworks</span>
   • Arduino      - Embedded systems & IoT development
   • ROS2         - Robotic systems integration
   • OpenCV       - Computer vision & image processing
   • EV3          - Educational robotics
   • Three.js     - 3D web graphics & visualization
+</div>
 
+<div class="skill-category">
 <span class="warning">Specialized Domains</span>
   • Robotics     - Control systems, sensor integration, motion planning
   • AI/ML        - Machine learning models, neural networks
   • Data Science - Analysis, visualization, statistical modeling
   • Web Dev      - Full-stack development, responsive design
-                `;
+</div>
+</div>`;
                 this.addOutput(skillsText);
             }
             
