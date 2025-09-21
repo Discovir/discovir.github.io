@@ -181,10 +181,17 @@
             animation: fadeIn 0.3s ease-in-out forwards;
         }
         
+        :root {
+            font-size: 16px;
+            --terminal-padding: 1.25rem;
+            --terminal-text: 1rem;
+            --terminal-radius: 0.625rem;
+        }
+
         .terminal-container {
             display: none;
             height: 100vh;
-            padding: 20px;
+            padding: var(--terminal-padding);
             background: rgba(10, 10, 10, 0.95);
             backdrop-filter: blur(10px);
         }
@@ -193,10 +200,10 @@
             width: 100%;
             max-width: 1200px;
             margin: 0 auto;
-            height: calc(100vh - 40px);
+            height: calc(100vh - 2 * var(--terminal-padding));
             background: rgba(0, 0, 0, 0.9);
             border: 2px solid #333;
-            border-radius: 8px;
+            border-radius: var(--terminal-radius);
             box-shadow: 0 0 30px rgba(0, 255, 65, 0.2);
             position: relative;
             overflow: hidden;
@@ -341,22 +348,49 @@
             color: #4444ff;
         }
         
+        .terminal-body {
+            font-size: var(--terminal-text);
+            line-height: 1.5;
+            padding: var(--terminal-padding);
+        }
+
+        .terminal-input {
+            font-size: var(--terminal-text);
+            padding: 0.3rem;
+        }
+
+        .prompt {
+            font-size: var(--terminal-text);
+        }
+
         .skill-section {
             display: flex;
             flex-direction: column;
-            gap: 0.7em;
+            gap: 0.7rem;
             white-space: pre-line;
+            font-size: var(--terminal-text);
         }
         
         .skill-category {
-            margin: 0.5em 0;
-            padding-left: 1em;
+            margin: 0.5rem 0;
+            padding-left: 1rem;
             border-left: 2px solid #333;
         }
         
         .skill-category span.warning {
             display: block;
-            margin-bottom: 0.4em;
+            margin-bottom: 0.4rem;
+            font-size: calc(var(--terminal-text) * 1.1);
+        }
+
+        .success, .warning, .error, .info {
+            font-size: var(--terminal-text);
+        }
+
+        .ascii-art {
+            font-size: calc(var(--terminal-text) * 0.8);
+            line-height: 1.2;
+            margin: 0.5rem 0;
         }
         
         @keyframes fadeIn {
@@ -481,14 +515,22 @@
             100% { opacity: 1; filter: brightness(1) contrast(1); }
         }
         
+        /* Tablet and smaller devices */
         @media (max-width: 768px) {
+            :root {
+                font-size: 15px;
+            }
+            
             .terminal-container {
-                padding: 10px;
+                padding: 1rem;
+                max-width: 100%;
+                margin: 0 auto;
             }
             
             .terminal-body {
-                font-size: 12px;
-                padding: 15px;
+                font-size: 0.9rem;
+                padding: 1rem;
+                line-height: 1.4;
             }
             
             .game-container {
@@ -497,23 +539,83 @@
             }
             
             .ascii-art {
-                font-size: 8px;
+                font-size: 0.7rem;
+                line-height: 1.2;
+            }
+
+            .prompt {
+                font-size: 0.9rem;
+            }
+
+            .terminal-input {
+                font-size: 0.9rem;
+            }
+
+            .success, .warning, .error, .info {
+                font-size: 0.9rem;
             }
         }
         
+        /* Mobile devices */
         @media (max-width: 480px) {
+            :root {
+                font-size: 14px;
+            }
+
             .terminal {
                 border-radius: 0;
                 height: 100vh;
+                width: 100vw;
+                margin: 0;
             }
             
             .terminal-container {
-                padding: 0;
+                padding: 0.5rem;
+                height: 100%;
             }
             
             .terminal-body {
-                padding: 10px;
-                font-size: 11px;
+                padding: 0.8rem;
+                font-size: 1rem;
+            }
+
+            .ascii-art {
+                font-size: 0.6rem;
+                line-height: 1.1;
+            }
+
+            /* Adjust command output spacing */
+            .output-line {
+                margin: 0.5rem 0;
+            }
+
+            /* Make sure input is easily tappable */
+            .terminal-input {
+                font-size: 1rem;
+                height: 2rem;
+                padding: 0.3rem;
+            }
+
+            /* Adjust skill section spacing */
+            .skill-category {
+                margin: 0.4rem 0;
+                padding-left: 0.7rem;
+            }
+        }
+
+        /* Small mobile devices */
+        @media (max-width: 320px) {
+            :root {
+                font-size: 13px;
+            }
+
+            .terminal-body {
+                padding: 0.6rem;
+            }
+
+            .ascii-art {
+                font-size: 0.5rem;
+                line-height: 1;
             }
         }
     </style>
